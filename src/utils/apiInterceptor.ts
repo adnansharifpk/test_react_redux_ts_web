@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a shared axios instance
 const api = axios.create({
-  baseURL: import.meta.env.API_BASE_URL || 'http://localhost:8000', // Fallback to localhost if not found
+  baseURL: import.meta.env.VITE_API_BASE_URL, // Fallback to localhost if not found
 });
 
 // Add request interceptor
