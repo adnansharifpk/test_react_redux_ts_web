@@ -52,6 +52,19 @@ input {
   border: 1px solid #ccc;
 }
 
+/* Add a red border for invalid email */
+.is-invalid {
+  border-color: red !important;
+}
+
+/* Optional: Style for invalid feedback */
+.invalid-feedback {
+  color: red;
+  font-size: 0.875em;
+  margin-top: 0.5em;
+}
+
+
 /* Button styling */
 button {
   width: 100%;
@@ -62,6 +75,7 @@ button {
   border-radius: 5px;
   font-weight: bold;
 }
+
 
 /* Button hover effect */
 button:hover {
