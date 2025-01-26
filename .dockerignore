@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Build output
+build/
+
+# Local environment files
+#.env
+#*.env
+
+# Logs
+*.log
+
+# Docker related files
+Dockerfile*
+.dockerignore
+
+# IDE & OS-specific files
+.vscode/
+
+
+# Test coverage and other temporary files
+coverage/
+*.bak
+
+# git
+*.git
+*.gitignore

@@ -1,0 +1,79 @@
+/* Root container */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  flex: 1;
+}
+
+/* Logo animation */
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+/* Card padding */
+.card {
+  padding: 2em;
+}
+
+/* Read the docs text styling */
+.read-the-docs {
+  color: #888;
+}
+
+/* App layout */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure container takes full viewport height */
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+  margin-bottom: 60px; /* Prevent content from hiding behind the fixed footer */
+  overflow-y: auto; /* Make the content area scrollable */
+  padding-top: 60px; /* Add top padding to avoid overlap with the header */
+}
+
+.content {
+  flex-grow: 1; /* Allow content to grow and take remaining space */
+  padding: 20px;
+  margin-bottom: 60px; /* Prevent content from hiding behind footer */
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #d3d3d3;
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .App {
+    padding: 1rem; /* Reduce padding on smaller screens */
+  }
+  
+  .content {
+    padding: 15px;
+  }
+}
+
+

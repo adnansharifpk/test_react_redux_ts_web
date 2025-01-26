@@ -1,0 +1,102 @@
+/* Ensure the body and html take full height */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #242424; /* Dark background */
+  display: flex;
+  flex-direction: column; /* Stack header, content, and footer */
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Stack content and footer */
+  height: 100%;
+}
+
+/* Header styles */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  z-index: 1000; /* Ensure it stays on top of other content */
+  height: 50px; /* Set the height of the header */
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.header button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.header button:hover {
+  background-color: #0056b3;
+}
+
+/* Footer styles */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #d3d3d3; /* Light grey background */
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9rem;
+  margin-top: auto; /* Keeps footer at the bottom of the viewport */
+  height: 40px; /* Set the height of the header */
+}
+
+/* In your CSS file */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.user-email {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.logout-button {
+  margin-top: 4px;
+}
+
+/* Media Queries for Responsive Design */
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@media (max-width: 600px) {
+  .App {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+}
