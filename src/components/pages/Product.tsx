@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, updateProductSelectionAction } from '../../features/products/productSlice'; 
+import { fetchProducts, updateProductSelectionAction } from '../../features/products/productSlice';
 import { RootState, AppDispatch } from '../../store';
 import './styles/Product.css';
 import { toast, ToastContainer } from 'react-toastify';
@@ -19,8 +19,8 @@ const Product = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(sessionData?.sortDirection || 'asc');
   const [localProducts, setLocalProducts] = useState(products);
 
-  const searchTermRef = useRef(searchTerm); 
-  const isFetchingRef = useRef(false); 
+  const searchTermRef = useRef(searchTerm);
+  const isFetchingRef = useRef(false);
   const lastCallParamsRef = useRef<{ searchTerm: string; orderBy: string; sortDirection: string }>({
     searchTerm: '',
     orderBy: 'name',
@@ -30,24 +30,33 @@ const Product = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       searchTermRef.current = searchTerm;
-      fetchProductsIfNeeded();
-    }, 500); 
+      if (searchTerm.trim()) {
+        fetchProductsIfNeeded();
+      } else {
+        // Clear products and session data when search term is empty
+        setLocalProducts([]);
+        dispatch(setSessionData({ searchTerm: '', orderBy: 'name', sortDirection: 'asc' }));
+      }
+    }, 500);
     return () => clearTimeout(timeout);
   }, [searchTerm]);
 
   const fetchProductsIfNeeded = async () => {
-    if (!searchTermRef.current.trim() || isFetchingRef.current) return;
+    if (isFetchingRef.current) return; // Prevent fetch if already in progress
+    if (!searchTermRef.current.trim()) return; // Don't fetch if search term is empty or only spaces
+    console.log("searchTermRef.current "+searchTermRef.current+" orderBy "+ orderBy+ " sortDirection "+sortDirection)
     if (
       searchTermRef.current === lastCallParamsRef.current.searchTerm &&
       orderBy === lastCallParamsRef.current.orderBy &&
       sortDirection === lastCallParamsRef.current.sortDirection
     ) {
-      return;
+      return; // No need to fetch if parameters haven't changed
     }
 
     lastCallParamsRef.current = { searchTerm: searchTermRef.current, orderBy, sortDirection };
     isFetchingRef.current = true;
     try {
+      // Fetch the products with the correct sorting parameters
       await dispatch(fetchProducts({ searchTerm: searchTermRef.current, orderBy, sortDirection }));
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -57,10 +66,10 @@ const Product = () => {
   };
 
   useEffect(() => {
-    if (searchTerm.trim()) {
-      fetchProductsIfNeeded();
+    if (searchTerm.trim() || orderBy || sortDirection) {
+      dispatch(setSessionData({ searchTerm, orderBy, sortDirection }));
     }
-  }, [orderBy, sortDirection, dispatch, searchTerm]);
+  }, [searchTerm, orderBy, sortDirection, dispatch]);
 
   useEffect(() => {
     if (error) {
@@ -69,23 +78,28 @@ const Product = () => {
   }, [error]);
 
   useEffect(() => {
+    // Make sure localProducts is updated correctly from fetched products
     setLocalProducts(products);
   }, [products]);
 
-  useEffect(() => {
-    if (searchTerm.trim() || orderBy || sortDirection) {
-      dispatch(setSessionData({ searchTerm, orderBy, sortDirection }));
-    }
-  }, [searchTerm, orderBy, sortDirection, dispatch]);
-
   const handleSort = (column: string) => {
-    if (orderBy === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setOrderBy(column);
-      setSortDirection('asc');
-    }
-  };
+  if (orderBy === column) {
+    // If the column is already sorted, toggle the sort direction
+    const newSortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    setSortDirection(newSortDirection);  // Update sort direction
+  } else {
+    // If the column is new, set it to ascending order
+    setOrderBy(column);
+    setSortDirection('asc');  // Set to ascending by default
+  }
+};
+
+// Call fetchProductsIfNeeded in a useEffect hook to ensure it is triggered after sort state change
+useEffect(() => {
+  if (orderBy && sortDirection) {
+    fetchProductsIfNeeded();
+  }
+}, [orderBy, sortDirection]); // Dependency on orderBy and sortDirection
 
   const handleSelectProduct = async (productId: number, selected: boolean) => {
     try {
@@ -98,12 +112,7 @@ const Product = () => {
         );
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error('Failed to update selection: ' + error.message);
-      } else {
-        // If error is not an instance of Error, handle it differently
-        throw new Error('Failed to update selection.');
-      }
+      console.error('Failed to update selection:', error);
     }
   };
 
@@ -134,12 +143,24 @@ const Product = () => {
         <table className="table table-striped table-bordered table-hover">
           <thead>
             <tr>
-              <th onClick={() => handleSort('id')} style={{ cursor: 'pointer' }}>ID</th>
-              <th onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Name</th>
-              <th onClick={() => handleSort('description')} style={{ cursor: 'pointer' }}>Description</th>
-              <th onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>Price</th>
-              <th onClick={() => handleSort('stock')} style={{ cursor: 'pointer' }}>Stock</th>
-              <th onClick={() => handleSort('selected')} style={{ cursor: 'pointer' }}>Select</th>
+              <th onClick={() => handleSort('id')} style={{ cursor: 'pointer' }}>
+                ID {orderBy === 'id' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>
+                Name {orderBy === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('description')} style={{ cursor: 'pointer' }}>
+                Description {orderBy === 'description' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>
+                Price {orderBy === 'price' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('stock')} style={{ cursor: 'pointer' }}>
+                Stock {orderBy === 'stock' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('selected')} style={{ cursor: 'pointer' }}>
+                Select {orderBy === 'selected' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
             </tr>
           </thead>
           <tbody>
