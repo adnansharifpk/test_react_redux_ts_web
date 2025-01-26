@@ -11,15 +11,13 @@ const LoginComponent = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false); // State to track loading status
   const [emailValid, setEmailValid] = useState(true); // State to track email validity
-  const [submitted, setSubmitted] = useState(false); // To track if form was submitted
-
+  
   // Simple email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true); // Mark form as submitted
-
+  
     // Validate email
     if (!emailRegex.test(email)) {
       setEmailValid(false); // Mark email as invalid if it doesn't match the regex
