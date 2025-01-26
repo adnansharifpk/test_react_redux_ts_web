@@ -87,20 +87,6 @@ const Product = () => {
     }
   };
 
-  const sortedProducts = Array.isArray(localProducts)
-    ? [...localProducts].sort((a, b) => {
-        if (orderBy === 'name') {
-          return sortDirection === 'asc'
-            ? a.name.localeCompare(b.name)
-            : b.name.localeCompare(a.name);
-        }
-        if (orderBy === 'price') {
-          return sortDirection === 'asc' ? a.price - b.price : b.price - a.price;
-        }
-        return sortDirection === 'asc' ? a.id - b.id : b.id - a.id;
-      })
-    : [];
-
   const handleSelectProduct = async (productId: number, selected: boolean) => {
     try {
       const result = await dispatch(updateProductSelectionAction({ productId, selected }));
@@ -150,15 +136,15 @@ const Product = () => {
             <tr>
               <th onClick={() => handleSort('id')} style={{ cursor: 'pointer' }}>ID</th>
               <th onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Name</th>
-              <th>Description</th>
+              <th onClick={() => handleSort('description')} style={{ cursor: 'pointer' }}>Description</th>
               <th onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>Price</th>
-              <th>Stock</th>
-              <th>Select</th>
+              <th onClick={() => handleSort('stock')} style={{ cursor: 'pointer' }}>Stock</th>
+              <th onClick={() => handleSort('selected')} style={{ cursor: 'pointer' }}>Select</th>
             </tr>
           </thead>
           <tbody>
-            {sortedProducts.length > 0 ? (
-              sortedProducts.map((product) => (
+            {localProducts.length > 0 ? (
+              localProducts.map((product) => (
                 <tr key={product.id}>
                   <td>{product.id}</td>
                   <td>{product.name}</td>
